@@ -1,5 +1,4 @@
-﻿// В этом пространстве имен содержатся средства для работы с изображениями. 
-// Чтобы оно стало доступно, в проект был подключен Reference на сборку System.Drawing.dll
+using System;
 using System.Drawing;
 
 namespace Fractals
@@ -8,25 +7,37 @@ namespace Fractals
 	{
 		public static void DrawDragonFractal(Pixels pixels, int iterationsCount, int seed)
 		{
-			/*
-			Начните с точки (1, 0)
-			Создайте генератор рандомных чисел с сидом seed
-			
-			На каждой итерации:
+			var x = 1.0;
+			var y = 0.0;
+			var pixel = new double[2];
+			pixels.SetPixel(x, y);
+			var random = new Random(seed);
+			for (var i = 0; i < iterationsCount; i++)
+			{
+				if (random.Next(0, 3) < 2)
+					pixel = Draw(x, y, 45);
+				else
+				{ 
+					pixel = Draw(x, y, 135);
+					pixel[0]++;
+				}
+				x = pixel[0];
+				y = pixel[1];
+				pixels.SetPixel(x, y);
+			}
+		}
 
-			1. Выберите случайно одно из следующих преобразований и примените его к текущей точке:
+		public static double[] Draw(double x, double y, double ang)
+		{
+			var newCoord = new double[2];
+			newCoord[0] = DrawFractal(x,  y, Math.Cos(ang), Math.Sin(ang));
+			newCoord[1] = DrawFractal(x, -y, Math.Sin(ang), Math.Cos(ang));
+			return newCoord;
+		}
 
-				Преобразование 1. (поворот на 45° и сжатие в sqrt(2) раз):
-				x' = (x · cos(45°) - y · sin(45°)) / sqrt(2)
-				y' = (x · sin(45°) + y · cos(45°)) / sqrt(2)
-
-				Преобразование 2. (поворот на 135°, сжатие в sqrt(2) раз, сдвиг по X на единицу):
-				x' = (x · cos(135°) - y · sin(135°)) / sqrt(2) + 1
-				y' = (x · sin(135°) + y · cos(135°)) / sqrt(2)
-		
-			2. Нарисуйте текущую точку методом pixels.SetPixel(x, y)
-
-			*/
+		public static double DrawFractal(double x, double y, double mathAngX, double mathAngY)
+		{
+			return (x * mathAngX - y * mathAngY) / Math.Sqrt(2);
 		}
 	}
 }
