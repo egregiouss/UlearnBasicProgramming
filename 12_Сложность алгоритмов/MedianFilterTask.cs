@@ -3,9 +3,9 @@ using System.Collections.Generic;
 namespace Recognizer
 {
     internal static class MedianFilterTask
+    {
+        public static double[,] MedianFilter(double[,] original)
 	{
-		public static double[,] MedianFilter(double[,] original)
-		{
             var width = original.GetLength(0);
             var height = original.GetLength(1);
             var medianArray = new double[width, height];
