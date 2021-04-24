@@ -12,7 +12,7 @@ namespace Autocomplete
                 var middle = left + (right - left) / 2;
                 if (middle < 0) return right;
                 if (string.Compare(prefix, phrases[middle]) <= 0 && 
-					!phrases[middle].StartsWith(prefix))
+		    !phrases[middle].StartsWith(prefix))
                     right = middle;
                 else left = middle + 1;
             }
