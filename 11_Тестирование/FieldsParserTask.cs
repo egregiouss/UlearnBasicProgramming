@@ -1,41 +1,45 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace TableParser
 {
     [TestFixture]
-    public class FieldParserTaskTests
+    public class QuotedFieldTaskTests
     {
-        public static void Test(string input, string[] expectedResult)
+        [TestCase("''", 0, "", 2)]
+        [TestCase("'a'", 0, "a", 3)]
+        [TestCase("\"a \'b\' \'c\' d\"", 0, "a 'b' 'c' d", 13)]
+        [TestCase("\'b\"a\'\"", 0, "b\"a", 5)]
+		[TestCase("abc\"defa", 3, "defa", 5)]
+        public void Test(string line, int startIndex, string expectedValue, int expectedLength)
         {
-            var actualResult = FieldsParserTask.ParseLine(input);
-            Assert.AreEqual(expectedResult.Length, actualResult.Count);
-            for (int i = 0; i < expectedResult.Length; ++i)
-            {
-                Assert.AreEqual(expectedResult[i], actualResult[i].Value);
-            }
+            var actualToken = QuotedFieldTask.ReadQuotedField(line, startIndex);
+            Assert.AreEqual(actualToken, new Token(expectedValue, startIndex, expectedLength));
         }
-
-        // Скопируйте сюда метод с тестами из предыдущей задачи.
     }
 
-    public class FieldsParserTask
+    class QuotedFieldTask
     {
-        // При решении этой задаче постарайтесь избежать создания методов, длиннее 10 строк.
-        // Подумайте как можно использовать ReadQuotedField и Token в этой задаче.
-        public static List<Token> ParseLine(string line)
-        {
-            return new List<Token> { ReadQuotedField(line, 0) }; // сокращенный синтаксис для инициализации коллекции.
-        }
-        
-        private static Token ReadField(string line, int startIndex)
-        {
-            return new Token(line, 0, line.Length);
-        }
-
         public static Token ReadQuotedField(string line, int startIndex)
         {
-            return QuotedFieldTask.ReadQuotedField(line, startIndex);
+            StringBuilder builder = new StringBuilder();
+            int i;
+            for ( i = startIndex + 1; i < line.Length; i++)
+            {
+                if (line[i] == line[startIndex] && line[i - 1] != '\\')
+				{
+                    i++;
+					break;
+				}
+				if (line[i] == '\\') 
+                    continue;
+                builder.Append(line[i]);
+            }
+            return new Token(builder.ToString(), startIndex, i - startIndex);
         }
     }
 }
