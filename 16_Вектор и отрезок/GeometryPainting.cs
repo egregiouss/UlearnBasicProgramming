@@ -13,6 +13,6 @@ namespace GeometryPainting
 		        => SegmentsColors[segment] = color;
 
 		    public static Color GetColor(this Segment segment)
-			      => SegmentsColors.ContainsKey(segment) ? SegmentsColors[segment] : Color.Black;
+                        => SegmentsColors.ContainsKey(segment) ? SegmentsColors[segment] : Color.Black;
     }
 }
